@@ -120,3 +120,51 @@ SELECT Classes.class, Ships.name, Classes.country FROM Ships
 SELECT hd FROM PC
 	GROUP BY hd
 	HAVING COUNT(hd)>1
+
+###################################################################################
+
+#Найдите пары моделей PC, имеющих одинаковые скорость и RAM. В результате каждая
+#пара указывается только один раз, т.е. (i,j), но не (j,i), Порядок вывода: модель
+#с большим номером, модель с меньшим номером, скорость и RAM.
+
+SELECT DISTINCT p1.model, p2.model, p1.speed, p1.ram FROM PC AS p1, PC AS p2
+	WHERE p1.speed=p2.speed AND p1.ram=p2.ram AND p1.model > p2.model
+	ORDER BY p1.model
+
+###################################################################################
+
+#Найдите модели ПК-блокнотов, скорость которых меньше скорости любого из ПК.
+#Вывести: type, model, speed
+
+SELECT DISTINCT p.type, p.model, l.speed FROM Product p
+	INNER JOIN Laptop l ON l.speed < ALL (SELECT speed FROM PC)
+	WHERE l.model = p.model AND p.type='Laptop'
+
+###################################################################################
+
+#Найдите производителей самых дешевых цветных принтеров. Вывести: maker, price
+
+SELECT DISTINCT  p.maker, r.price FROM Printer r 
+	INNER JOIN Product p ON p.type='Printer'
+	WHERE r.price = (SELECT MIN(price) FROM Printer WHERE color='y') AND  p.model=r.model AND r.color='y'
+
+###################################################################################
+
+#Для каждого производителя, имеющего модели в таблице Laptop, найдите средний
+#размер экрана выпускаемых им ПК-блокнотов.
+#Вывести: maker, средний размер экрана.
+
+SELECT p.maker, AVG(l.screen) FROM Product p
+	INNER JOIN Laptop l ON p.model=l.model
+	WHERE p.type='Laptop'
+	GROUP BY p.maker
+
+###################################################################################
+
+#Найдите производителей, выпускающих по меньшей мере три различных модели ПК.
+#Вывести: Maker, число моделей ПК.
+
+SELECT p.maker, COUNT(p.model) AS Count_Model FROM Product p
+	WHERE p.type='PC'
+	GROUP BY p.maker
+	HAVING COUNT(p.model)>2
