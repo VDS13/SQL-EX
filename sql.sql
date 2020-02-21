@@ -232,3 +232,71 @@ SELECT maker FROM Product
 		AND ram = (SELECT MIN(ram) FROM PC))
  	AND maker IN (SELECT p.maker FROM Product p WHERE p.type='Printer')
 GROUP BY maker
+
+###################################### 26 ##########################################
+
+#Найдите среднюю цену ПК и ПК-блокнотов, выпущенных производителем A
+#(латинская буква). Вывести: одна общая средняя цена.
+
+SELECT AVG(price) AS AVG_price FROM (
+	SELECT price FROM Product p 
+		INNER JOIN PC ON p.model=PC.model
+		WHERE  p.maker = 'A'
+	UNION ALL
+	SELECT price FROM Product p
+		INNER JOIN Laptop l ON p.model=l.model
+		WHERE p.maker = 'A') X
+	
+###################################### 27 ##########################################
+
+#Найдите средний размер диска ПК каждого из тех производителей, которые выпускают и
+#принтеры. Вывести: maker, средний размер HD.
+
+SELECT p.maker AS Maker, AVG(pc.hd) AS Avg_hd FROM Product p
+	INNER JOIN PC pc ON pc.model = p.model
+	WHERE p.maker IN (SELECT p.maker FROM Product p
+		WHERE p.type='Printer')
+	GROUP BY p.maker
+
+###################################### 28 ##########################################
+
+#Используя таблицу Product, определить количество производителей, выпускающих по
+#одной модели.
+
+SELECT DISTINCT COUNT(maker) AS qty FROM(
+	SELECT maker FROM Product
+		GROUP BY maker
+		HAVING COUNT(DISTINCT model) = 1) X
+
+###################################### 31 ##########################################
+
+#Для классов кораблей, калибр орудий которых не менее 16 дюймов, укажите класс и
+#страну.
+
+
+SELECT class, country FROM Classes
+	WHERE bore >= 16
+
+###################################### 33 ##########################################
+
+#Укажите корабли, потопленные в сражениях в Северной Атлантике (North Atlantic).
+#Вывод: ship..
+
+
+SELECT ship FROM Outcomes 
+	WHERE result='sunk' AND battle='North Atlantic'
+
+###################################### 34 ##########################################
+
+#По Вашингтонскому международному договору от начала 1922 г. запрещалось строить
+#линейные корабли водоизмещением более 35 тыс.тонн.
+#Укажите корабли, нарушившие этот договор (учитывать только корабли c известным
+#годом спуска на воду). Вывести названия кораблей.
+
+
+SELECT DISTINCT s.name FROM Ships s
+	INNER JOIN Classes c ON c.type='bb'
+	WHERE c.class=s.class AND c.displacement > 35000
+						AND s.launched>=1922
+						AND s.launched IS NOT NULL
+
