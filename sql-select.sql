@@ -383,6 +383,20 @@ SELECT DISTINCT o.battle FROM Outcomes o
 	INNER JOIN Ships s ON s.name = o.ship
 	WHERE s.class='Kongo'
 
+###################################### 52 ##########################################
+
+#Определить названия всех кораблей из таблицы Ships, которые могут быть линейным
+#японским кораблем, имеющим число главных орудий не менее девяти, калибр орудий
+#менее 19 дюймов и водоизмещение не более 65 тыс.тонн
+
+SELECT s.name FROM Ships s
+	INNER JOIN Classes c ON c.class=s.class
+	WHERE (c.country = 'Japan' OR c.country IS NULL)
+		AND c.type='bb'
+		AND (c.numGuns>=9 OR c.numGuns IS NULL)
+		AND (c.bore <19 OR c.bore IS NULL)
+		AND (c.displacement<=65000 OR c.displacement IS NULL)
+
 ###################################### 53 ##########################################
 
 #Определите среднее число орудий для классов линейных кораблей.
