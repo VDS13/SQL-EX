@@ -326,3 +326,25 @@ SELECT country FROM Classes
 
 SELECT ship, battle FROM Outcomes
 	WHERE result='sunk'
+
+###################################### 44 ##########################################
+
+#Найдите названия всех кораблей в базе данных, начинающихся с буквы R.
+
+SELECT name FROM Ships
+	WHERE name LIKE 'R%'
+UNION
+SELECT ship AS name FROM Outcomes
+	WHERE ship LIKE 'R%'
+
+###################################### 45 ##########################################
+
+#Найдите названия всех кораблей в базе данных, состоящие из трех и более слов
+#(например, King George V).
+#Считать, что слова в названиях разделяются единичными пробелами, и нет концевых пробелов.
+
+SELECT name FROM Ships
+	WHERE name LIKE '% % %'
+UNION
+SELECT ship AS name FROM Outcomes
+	WHERE ship LIKE '% % %'
