@@ -273,7 +273,6 @@ SELECT DISTINCT COUNT(maker) AS qty FROM(
 #Для классов кораблей, калибр орудий которых не менее 16 дюймов, укажите класс и
 #страну.
 
-
 SELECT class, country FROM Classes
 	WHERE bore >= 16
 
@@ -281,7 +280,6 @@ SELECT class, country FROM Classes
 
 #Укажите корабли, потопленные в сражениях в Северной Атлантике (North Atlantic).
 #Вывод: ship..
-
 
 SELECT ship FROM Outcomes 
 	WHERE result='sunk' AND battle='North Atlantic'
@@ -293,10 +291,38 @@ SELECT ship FROM Outcomes
 #Укажите корабли, нарушившие этот договор (учитывать только корабли c известным
 #годом спуска на воду). Вывести названия кораблей.
 
-
 SELECT DISTINCT s.name FROM Ships s
 	INNER JOIN Classes c ON c.type='bb'
 	WHERE c.class=s.class AND c.displacement > 35000
 						AND s.launched>=1922
 						AND s.launched IS NOT NULL
 
+###################################### 36 ##########################################
+
+#Перечислите названия головных кораблей, имеющихся в базе данных
+#(учесть корабли в Outcomes).
+
+SELECT name FROM Ships
+	WHERE name=class
+UNION
+SELECT ship AS name FROM Outcomes 
+	WHERE ship IN (SELECT class FROM Classes)
+
+###################################### 38 ##########################################
+
+#Найдите страны, имевшие когда-либо классы обычных боевых кораблей ('bb')
+#и имевшие когда-либо классы крейсеров ('bc').
+
+SELECT country FROM Classes
+	WHERE type='bb'
+INTERSECT
+SELECT country FROM Classes
+	WHERE type='bc'
+
+###################################### 42 ##########################################
+
+#Найдите названия кораблей, потопленных в сражениях, и название сражения,
+#в котором они были потоплены.
+
+SELECT ship, battle FROM Outcomes
+	WHERE result='sunk'
