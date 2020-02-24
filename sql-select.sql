@@ -348,3 +348,46 @@ SELECT name FROM Ships
 UNION
 SELECT ship AS name FROM Outcomes
 	WHERE ship LIKE '% % %'
+
+###################################### 48 ##########################################
+
+#Найдите классы кораблей, в которых хотя бы один корабль был потоплен в сражении.
+
+SELECT c.class FROM Classes c
+	INNER JOIN Outcomes o ON o.ship=c.class
+	WHERE o.result = 'sunk'
+UNION
+SELECT c.class FROM Classes c
+	INNER JOIN Ships s ON s.class=c.class
+	INNER JOIN Outcomes o ON s.name=o.ship
+	WHERE o.result = 'sunk'
+
+###################################### 49 ##########################################
+
+#Найдите названия кораблей с орудиями калибра 16 дюймов
+#(учесть корабли из таблицы Outcomes).
+
+SELECT s.name FROM Ships s
+	INNER JOIN Classes c ON c.class = s.class
+	WHERE c.bore=16
+UNION
+SELECT o.ship AS name FROM Outcomes o
+	INNER JOIN Classes c ON c.class = o.ship
+	WHERE c.bore=16
+
+###################################### 50 ##########################################
+
+#Найдите сражения, в которых участвовали корабли класса Kongo из таблицы Ships.
+
+SELECT DISTINCT o.battle FROM Outcomes o
+	INNER JOIN Ships s ON s.name = o.ship
+	WHERE s.class='Kongo'
+
+###################################### 53 ##########################################
+
+#Определите среднее число орудий для классов линейных кораблей.
+#Получить результат с точностью до 2-х десятичных знаков.
+
+SELECT CAST(AVG(CAST(numGuns AS numeric(4,2))) AS numeric(6,2))
+AS AvgnumGuns FROM Classes
+	WHERE type='bb'
