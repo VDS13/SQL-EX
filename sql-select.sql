@@ -405,3 +405,13 @@ SELECT s.name FROM Ships s
 SELECT CAST(AVG(CAST(numGuns AS numeric(4,2))) AS numeric(6,2))
 AS AvgnumGuns FROM Classes
 	WHERE type='bb'
+
+###################################### 55 ##########################################
+
+#Для каждого класса определите год, когда был спущен на воду первый корабль этого
+#класса. Если год спуска на воду головного корабля неизвестен, определите
+#минимальный год спуска на воду кораблей этого класса. Вывести: класс, год.
+
+SELECT c.class, MIN(s.launched) FROM Ships s
+	RIGHT JOIN Classes c ON c.class=s.class
+	GROUP BY c.class
